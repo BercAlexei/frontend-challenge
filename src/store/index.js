@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     allPostsCats: [],
-    loading: false
+    loading: true,
+    numberOfCats: 25
   },
   getters: {
     allPostsCats(state) {
@@ -22,24 +23,27 @@ export default new Vuex.Store({
   mutations: {
     updatePostsCats(state, data) {
       data.forEach(item => {
-        let newObj = Object.assign({like: false}, item)
+        let newObj = Object.assign({ like: false }, item)
         state.allPostsCats.push(newObj)
       })
     },
     likePost(state, post) {
       post.like = !post.like
+    },
+    updateNumberCats(state, number) {
+      state.numberOfCats = number
     }
   },
   actions: {
     async getPost({ commit, state }) {
       state.loading = true
-      const res = await fetch('https://api.thecatapi.com/v1/images/search?api_key=79cb7318-dbad-4af1-adef-424a80eed64b&limit=25');
-      if(res.status == 200) {
+      const res = await fetch(`https://api.thecatapi.com/v1/images/search?api_key=79cb7318-dbad-4af1-adef-424a80eed64b&limit=${state.numberOfCats}`);
+      if (res.status == 200) {
+        const dataPosts = await res.json();
+        commit('updatePostsCats', dataPosts)
         state.loading = false
       }
-      const dataPosts = await res.json();
 
-      commit('updatePostsCats', dataPosts)
     }
   }
 })

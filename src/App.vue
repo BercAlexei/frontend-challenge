@@ -36,13 +36,14 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   computed: {
     ...mapGetters(["loading"]),
   },
   methods: {
+    ...mapMutations(["updateNumberCats"]),
     ...mapActions(["getPost"]),
     roundPX(num) {
       return Math.round((num / 100) * 100);
@@ -60,12 +61,30 @@ export default {
       });
     },
   },
+  updated() {
+    if (
+      window.innerHeight == document.documentElement.scrollHeight &&
+      !this.loading &&
+      this.$router.currentRoute.name === "home"
+    ) {
+      this.getPost();
+    }
+  },
   mounted() {
     this.$router.push("/").catch(() => {});
     this.scroll();
   },
-  async created() {
-    await this.getPost();
+  created() {
+    switch (true) {
+      case document.documentElement.clientWidth < 992 &&
+        document.documentElement.clientWidth > 576:
+        this.updateNumberCats(15);
+        break;
+      case document.documentElement.clientWidth < 576:
+        this.updateNumberCats(10);
+        break;
+    }
+    this.getPost();
   },
 };
 </script>
