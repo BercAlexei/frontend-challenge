@@ -32,6 +32,9 @@ export default new Vuex.Store({
     },
     updateNumberCats(state, number) {
       state.numberOfCats = number
+    },
+    updateLoading(state) {
+      state.loading = false
     }
   },
   actions: {

@@ -43,7 +43,7 @@ export default {
     ...mapGetters(["loading"]),
   },
   methods: {
-    ...mapMutations(["updateNumberCats"]),
+    ...mapMutations(["updateNumberCats", "updateLoading"]),
     ...mapActions(["getPost"]),
     roundPX(num) {
       return Math.round((num / 100) * 100);
@@ -62,6 +62,9 @@ export default {
     },
   },
   updated() {
+    if(this.$router.currentRoute.name !== "home") {
+      this.updateLoading()
+    }
     if (
       window.innerHeight == document.documentElement.scrollHeight &&
       !this.loading &&
